@@ -91,7 +91,27 @@
         // Telegram WebApp interfeysini sozlash
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
+           <div class="mb-4">
+    <button onclick="requestPDF()" class="w-full bg-red-500 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
+        <i class="fas fa-file-pdf"></i> TEST SAVOLLARINI YUKLASH (PDF)
+    </button>
+</div>
+
+<script>
+function requestPDF() {
+    // Telegram Mini App orqali botga ma'lumot yuborish
+    if (window.Telegram && window.Telegram.WebApp) {
+        // Botga "send_pdf" matnini yuboradi
+        window.Telegram.WebApp.sendData("request_pdf_file");
+        
+        // Foydalanuvchiga botga qaytishini bildirish
+        window.Telegram.WebApp.close(); 
+    } else {
+        alert("Bu funksiya faqat Telegram bot ichida ishlaydi!");
+    }
+}
+</script>
+window.Telegram.WebApp.expand();
         }
     </script>
 </body>
