@@ -1,18 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="uz">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Ishlash</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        button { padding: 10px 20px; background: #2ecc71; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .savol-card { border-bottom: 1px solid #eee; padding: 15px 0; }
+        .variantlar { margin-top: 10px; }
+        .variantlar label { display: block; background: #f9f9f9; padding: 10px; margin: 5px 0; border-radius: 8px; cursor: pointer; border: 1px solid #eee; }
+        .variantlar input { margin-right: 10px; }
+        #natija-btn { width: 100%; margin-top: 20px; background: #3498db; display: none; }
+    </style>
 </head>
 <body>
-    <input type="text" id="kodInput" placeholder="Test kodini kiriting">
-    <button onclick="yuklash()">Testni Boshlash</button>
-    <div id="savollar"></div>
 
-    <script>
-        function yuklash() {
-            // Bu yerda kodni dekodlash va testni chiqarish logikasi bo'ladi
-            alert("Test yuklanmoqda...");
+<div class="container">
+    <h2>Test Yechish</h2>
+    <div class="input-group">
+        <input type="text" id="testKod" placeholder="Test kodini shu yerga qo'ying...">
+        <button onclick="testniBoshlash()">Boshlash</button>
+    </div>
+
+    <div id="testMaydoni"></div>
+    <button id="natija-btn" onclick="hisoblash()">Natijani Ko'rish</button>
+</div>
+
+<script>
+    let aslSavollar = [];
+
+    function testniBoshlash() {
+        const kod = document.getElementById('testKod').value;
+        const maydon = document.getElementById('testMaydoni');
+        
+        try {
+            // Kodni ochish (Decoding)
+            const dekodlangan = JSON.parse(atob(kod));
+            aslSavollar = dekodlangan;
+            maydon.innerHTML = "";
+
+            aslSavollar.forEach((s, index) => {
+                maydon.innerHTML += `
+                    <div class="savol-card">
+                        <p><b>${index + 1}. ${s.s}</b></p>
+                        <div class="variantlar">
+                            <label><input type="radio" name="q${index}" value="a"> A) ${s.a}</label>
+                            <label><input type="radio" name="q${index}" value="b"> B) ${s.b}</label>
+                            <label><input type="radio" name="q${index}" value="c"> C) ${s.c}</label>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('natija-btn').style.display = "block";
+        } catch (e) {
+            alert("Xato: Test kodi noto'g'ri kiritildi!");
         }
-    </script>
+    }
+
+    function hisoblash() {
+        let ball = 0;
+        aslSavollar.forEach((s, index) => {
+            const tanlangan = document.querySelector(`input[name="q${index}"]:checked`);
+            if (tanlangan && tanlangan.value === "c") { // Biz "C" variantni doim to'g'ri deb kiritganmiz deb hisoblaymiz (Yaratish bo'limiga qarab o'zgaradi)
+                ball++;
+            }
+        });
+        alert("Siz 40 tadan " + ball + " ta to'g'ri topdingiz!");
+    }
+</script>
+
 </body>
 </html>
