@@ -1,46 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="uz">
 <head>
-    <title>Test Yaratish</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yangi Test Yaratish</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-        .savol-blok { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
-        input { width: 90%; padding: 8px; margin: 5px 0; }
+        :root { --primary: #27ae60; --dark: #2c3e50; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: var(--dark); margin-bottom: 30px; }
+        .savol-blok { 
+            background: #fff; border: 2px solid #eef2f3; padding: 20px; 
+            margin-bottom: 25px; border-radius: 12px; transition: 0.3s;
+        }
+        .savol-blok:hover { border-color: var(--primary); }
+        .savol-blok b { display: block; margin-bottom: 10px; color: var(--primary); font-size: 1.1rem; }
+        input[type="text"] { 
+            width: 100%; padding: 12px; margin: 8px 0; 
+            border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; 
+        }
+        .radio-group { display: flex; gap: 15px; margin-top: 10px; background: #f8f9fa; padding: 10px; border-radius: 8px; }
+        .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: bold; }
+        .btn-save { 
+            width: 100%; padding: 20px; background: var(--primary); color: white; 
+            border: none; border-radius: 12px; font-size: 1.2rem; cursor: pointer; 
+            font-weight: bold; margin-top: 20px; transition: 0.3s;
+        }
+        .btn-save:hover { background: #219150; transform: translateY(-2px); }
+        #kod-chiqish { 
+            display: none; background: #e8f5e9; border: 2px dashed #27ae60; 
+            padding: 20px; margin-top: 20px; border-radius: 12px; word-break: break-all; 
+        }
     </style>
 </head>
 <body>
-    <h2>40 ta test yarating</h2>
-    <div id="testlar-konteyner"></div>
-    <button onclick="testniSaqlash()" style="padding: 15px 30px; background: green; color: white; border: none; cursor: pointer;">Test Kodini Olish</button>
 
-    <script>
-        // 40 ta savol inputini avtomatik chiqarish
-        const container = document.getElementById('testlar-konteyner');
-        for (let i = 1; i <= 40; i++) {
-            container.innerHTML += `
-                <div class="savol-blok">
-                    <p><b>${i}-savol:</b></p>
-                    <input type="text" id="q${i}" placeholder="Savol matni">
-                    <input type="text" id="a${i}" placeholder="A varianti">
-                    <input type="text" id="b${i}" placeholder="B varianti (To'g'ri javob)">
+<div class="container">
+    <h1>📝 40 talik Test Yaratish</h1>
+    <p style="text-align: center; color: #666;">Har bir savolni to'ldiring va to'g'ri javobni belgilang.</p>
+    
+    <div id="savollar-konteyner"></div>
+
+    <button class="btn-save" onclick="generateTest()">🚀 Test Kodini Generatsiya Qilish</button>
+
+    <div id="kod-chiqish">
+        <h3 style="margin-top:0; color: #27ae60;">✅ Test Tayyor!</h3>
+        <p>Quyidagi kodni nusxalab oling va o'quvchilarga yuboring:</p>
+        <code id="final-kod" style="display:block; background: #fff; padding: 10px; border-radius: 5px; margin-bottom: 10px;"></code>
+        <button onclick="copyToClipboard()" style="background:#2c3e50; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer;">Nusxa olish</button>
+    </div>
+</div>
+
+<script>
+    // 40 ta savol formasini yaratish
+    const container = document.getElementById('savollar-konteyner');
+    for (let i = 1; i <= 40; i++) {
+        container.innerHTML += `
+            <div class="savol-blok">
+                <b>${i}-savol</b>
+                <input type="text" id="q${i}" placeholder="Savol matnini kiriting..." required>
+                <input type="text" id="a${i}" placeholder="A varianti" required>
+                <input type="text" id="b${i}" placeholder="B varianti" required>
+                <input type="text" id="c${i}" placeholder="C varianti" required>
+                
+                <div class="radio-group">
+                    <span>To'g'ri javobni tanlang:</span>
+                    <label><input type="radio" name="correct${i}" value="a" checked> A</label>
+                    <label><input type="radio" name="correct${i}" value="b"> B</label>
+                    <label><input type="radio" name="correct${i}" value="c"> C</label>
                 </div>
-            `;
+            </div>
+        `;
+    }
+
+    function generateTest() {
+        let testData = [];
+        for (let i = 1; i <= 40; i++) {
+            let q = document.getElementById(`q${i}`).value;
+            let a = document.getElementById(`a${i}`).value;
+            let b = document.getElementById(`b${i}`).value;
+            let c = document.getElementById(`c${i}`).value;
+            let ans = document.querySelector(`input[name="correct${i}"]:checked`).value;
+
+            if(!q || !a || !b || !c) {
+                alert(i + "-savol to'liq to'ldirilmagan!");
+                return;
+            }
+
+            testData.push({ s: q, a: a, b: b, c: c, r: ans });
         }
 
-        function testniSaqlash() {
-            let barchaSavollar = [];
-            for (let i = 1; i <= 40; i++) {
-                barchaSavollar.push({
-                    s: document.getElementById(`q${i}`).value,
-                    a: document.getElementById(`a${i}`).value,
-                    b: document.getElementById(`b${i}`).value
-                });
-            }
-            // Ma'lumotni matnga aylantirish (Base64 kodlash - bu bizda ID o'rniga o'tadi)
-            let kod = btoa(JSON.stringify(barchaSavollar));
-            alert("Sizning test kodingiz (buni nusxalab oling):\n\n" + kod.substring(0, 10));
-            console.log(kod); // To'liq kod konsolda chiqadi
-        }
-    </script>
+        // Ma'lumotni kodlash
+        const finalString = btoa(unescape(encodeURIComponent(JSON.stringify(testData))));
+        document.getElementById('final-kod').innerText = finalString;
+        document.getElementById('kod-chiqish').style.display = "block";
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function copyToClipboard() {
+        const kodText = document.getElementById('final-kod').innerText;
+        navigator.clipboard.writeText(kodText).then(() => {
+            alert("Kod nusxalandi!");
+        });
+    }
+</script>
+
 </body>
 </html>
