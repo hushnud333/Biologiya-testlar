@@ -5,48 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Ishlash</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
-        button { padding: 10px 20px; background: #2ecc71; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .savol-card { border-bottom: 1px solid #eee; padding: 15px 0; }
-        .variantlar { margin-top: 10px; }
-        .variantlar label { display: block; background: #f9f9f9; padding: 10px; margin: 5px 0; border-radius: 8px; cursor: pointer; border: 1px solid #eee; }
+        :root { --primary: #3498db; --success: #27ae60; --dark: #2c3e50; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; padding: 20px; margin: 0; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .input-box { display: flex; gap: 10px; margin-bottom: 30px; }
+        input[type="text"] { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 10px; outline: none; }
+        input[type="text"]:focus { border-color: var(--primary); }
+        button { padding: 12px 20px; background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .savol-card { background: #fff; border: 1px solid #eee; padding: 20px; margin-bottom: 15px; border-radius: 12px; }
+        .savol-matni { font-weight: bold; margin-bottom: 15px; color: var(--dark); display: block; }
+        .variantlar label { 
+            display: block; background: #f8f9fa; padding: 12px; margin: 8px 0; 
+            border-radius: 10px; cursor: pointer; border: 1px solid #eee; transition: 0.2s;
+        }
+        .variantlar label:hover { background: #eef2f3; }
         .variantlar input { margin-right: 10px; }
-        #natija-btn { width: 100%; margin-top: 20px; background: #3498db; display: none; }
+        #check-btn { width: 100%; background: var(--success); margin-top: 20px; display: none; font-size: 1.1rem; }
+        #result { margin-top: 20px; text-align: center; font-weight: bold; font-size: 1.2rem; display: none; padding: 20px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Test Yechish</h2>
-    <div class="input-group">
-        <input type="text" id="testKod" placeholder="Test kodini shu yerga qo'ying...">
-        <button onclick="testniBoshlash()">Boshlash</button>
+    <h2 style="text-align: center; color: var(--dark);">📝 Testni Boshlash</h2>
+    <div class="input-box">
+        <input type="text" id="testKod" placeholder="Test kodini bu yerga qo'ying...">
+        <button onclick="testniYuklash()">Yuklash</button>
     </div>
 
     <div id="testMaydoni"></div>
-    <button id="natija-btn" onclick="hisoblash()">Natijani Ko'rish</button>
+    <button id="check-btn" onclick="natijaniHisoblash()">Natijani Tekshirish</button>
+    <div id="result"></div>
 </div>
 
 <script>
-    let aslSavollar = [];
+    let savollarBazasi = [];
 
-    function testniBoshlash() {
+    function testniYuklash() {
         const kod = document.getElementById('testKod').value;
         const maydon = document.getElementById('testMaydoni');
         
         try {
-            // Kodni ochish (Decoding)
-            const dekodlangan = JSON.parse(atob(kod));
-            aslSavollar = dekodlangan;
+            // Kodni dekodlash (Base64 -> JSON)
+            const decodedData = JSON.parse(decodeURIComponent(escape(atob(kod))));
+            savollarBazasi = decodedData;
             maydon.innerHTML = "";
 
-            aslSavollar.forEach((s, index) => {
+            savollarBazasi.forEach((s, index) => {
                 maydon.innerHTML += `
                     <div class="savol-card">
-                        <p><b>${index + 1}. ${s.s}</b></p>
+                        <span class="savol-matni">${index + 1}. ${s.s}</span>
                         <div class="variantlar">
                             <label><input type="radio" name="q${index}" value="a"> A) ${s.a}</label>
                             <label><input type="radio" name="q${index}" value="b"> B) ${s.b}</label>
@@ -56,21 +64,29 @@
                 `;
             });
 
-            document.getElementById('natija-btn').style.display = "block";
+            document.getElementById('check-btn').style.display = "block";
+            document.getElementById('result').style.display = "none";
         } catch (e) {
-            alert("Xato: Test kodi noto'g'ri kiritildi!");
+            alert("Xato! Kod noto'g'ri yoki buzilgan.");
         }
     }
 
-    function hisoblash() {
-        let ball = 0;
-        aslSavollar.forEach((s, index) => {
-            const tanlangan = document.querySelector(`input[name="q${index}"]:checked`);
-            if (tanlangan && tanlangan.value === "c") { // Biz "C" variantni doim to'g'ri deb kiritganmiz deb hisoblaymiz (Yaratish bo'limiga qarab o'zgaradi)
-                ball++;
+    function natijaniHisoblash() {
+        let togriCount = 0;
+        savollarBazasi.forEach((s, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            if (selected && selected.value === s.r) {
+                togriCount++;
             }
         });
-        alert("Siz 40 tadan " + ball + " ta to'g'ri topdingiz!");
+
+        const rDiv = document.getElementById('result');
+        rDiv.style.display = "block";
+        rDiv.style.background = "#e8f5e9";
+        rDiv.style.color = "#2e7d32";
+        rDiv.innerHTML = `Natija: 40 tadan ${togriCount} ta to'g'ri! (${Math.round(togriCount/40*100)}%)`;
+        
+        window.scrollTo(0, document.body.scrollHeight);
     }
 </script>
 
