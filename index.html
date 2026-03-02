@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biologiya Test Platformasi</title>
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-create {
+            background-color: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+        }
+
+        .btn-create:hover {
+            background-color: #27ae60;
+            transform: translateY(-3px);
+        }
+
+        .btn-solve {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-solve:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>BioTest Online</h1>
+        <p>Biologiya fanidan o'z testlaringizni yarating yoki mavjud testlarni ishlang.</p>
+        
+        <div class="btn-group">
+            <a href="yaratish.html" class="btn btn-create">➕ Yangi Test Yaratish</a>
+            
+            <a href="ishlash.html" class="btn btn-solve">📝 Test Ishlash (ID orqali)</a>
+        </div>
+
+        <div class="footer">
+            &copy; 2024 Biologiya Test Tizimi
+        </div>
+    </div>
+
+</body>
+    </html>
+        
